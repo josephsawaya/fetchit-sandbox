@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
 func main() {
@@ -34,9 +35,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = tree.Tree("pkg/engine")
+	empty := object.Tree{}
+
+	changes, err := empty.Diff(tree)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	for _, change := range changes {
+		fmt.Printf("From: %s, To: %s\n", change.From.Name, change.To.Name)
+	}
+
 }
